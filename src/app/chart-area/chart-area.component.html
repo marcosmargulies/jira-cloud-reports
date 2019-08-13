@@ -1,0 +1,60 @@
+<div>
+  JIRA query
+  <input #box (keyup.enter)="onEnter(box.value)" width="400px" />
+  <p>{{ query }}</p>
+</div>
+
+<div class="row" *ngFor="let label of chartLabels" class="horizontal">
+  <input
+    (change)="CheckFieldsChange($event)"
+    value="{{ label }}"
+    type="checkbox"
+    checked
+  />
+  {{ label }}
+</div>
+
+<div class="row" *ngIf="chartData.length == 0">
+  <div class="col-md-6">
+    No data
+  </div>
+</div>
+<div class="row" *ngIf="chartData.length > 0">
+  <div class="col-md-6">
+    <div style="display: block;">
+      <canvas
+        baseChart
+        [datasets]="chartDataFiltered"
+        [labels]="chartLabelsFiltered"
+        [options]="chartOptions"
+        [legend]="chartLegend"
+        [chartType]="chartType"
+        (chartHover)="chartHovered($event)"
+        (chartClick)="chartClicked($event)"
+      ></canvas>
+    </div>
+  </div>
+  <div class="col-md-6" style="margin-bottom: 10px">
+    <details>
+      <summary>Click to open summary</summary>
+      <table class="table table-responsive table-condensed">
+        <tr>
+          <th>JIRA ticket</th>
+          <th *ngFor="let label of chartLabels">{{ label }}</th>
+        </tr>
+        <tr *ngFor="let d of chartData">
+          <td>{{ d.label }}</td>
+          <td *ngFor="let label of chartLabels; let j = index">
+            {{ d && d.data[j] | number: '1.0-2' }}
+          </td>
+        </tr>
+        <tr>
+          <td>Total</td>
+          <td *ngFor="let total of chartDataTotal">
+            {{ total | number: '1.0-2' }}
+          </td>
+        </tr>
+      </table>
+    </details>
+  </div>
+</div>
