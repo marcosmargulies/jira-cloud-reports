@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HttpErrorResponse
+} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +28,10 @@ export class DataService {
     // return this.http.get(`${this.jiraUrl}`, {});
     // this.setAuth('xxxx','xxxx');
     // xxxxx:xxxxx
-    const user = 'xxxxxx';
-    const token = 'xxxxxx';
+    const user = 'marcos.margulies@smith-nephew.com';
+    const token = '6LNhfTh35bOfejX6KLKf7C58';
     const header = new HttpHeaders();
-    header.append('Authorization', 'Basic ' + btoa(user + ':' + token));
+    //header.append('Authorization', 'Basic ' + btoa(user + ':' + token));
     header.append('Content-type', 'application/json');
 
     const param = new HttpParams();
@@ -36,20 +41,42 @@ export class DataService {
 
     // TO DO: Authentication, proper POST
     /*
-    return this.http.post(`${this.jiraUrl}search`, {
+    return this.http.post(`${this.jiraUrl}search`, null, {
       headers: header,
       params: param
-    });
-*/
+    });*/
 
-    return this.http
-      .get(
-        `${
-          this.jiraUrl
-        }search?jql=${jqlString}&maxResults=100&expand=changelog,names`,
-        {}
-      )
-      .pipe(map((response, any) => response));
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization:
+          'Basic bWFyY29zLm1hcmd1bGllc0BzbWl0aC1uZXBoZXcuY29tOjZMTmhmVGgzNWJPZmVqWDZLTEtmN0M1OA==',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Atlassian-Token': 'no-check',
+        'Response-Type': 'application/json'
+        // 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'
+      })
+    };
+    const post = 0;
+    if (post) {
+      return this.http
+        .post(
+          `${this.jiraUrl}search`,
+          {
+            jql: 'key=CP-241',
+            maxResults: 100,
+            expand: ['changelog', 'names']
+          },
+          httpOptions
+        )
+        .pipe(map((response, any) => response));
+    } else {
+      const url = encodeURI(
+        `${this.jiraUrl}search?jql=${jqlString}&maxResults=100&expand=changelog,names`
+      );
+
+      return this.http.get(url, {}).pipe(map((response, any) => response));
+    }
     /*
     return this.post(`${this.jiraUrl}search`, {
       jql: jqlString,
@@ -65,8 +92,20 @@ private post(url: string, body: any): Observable<any> {
       .pipe(map((response, any) => response));
   }
 */
-  private handleError(error: any): void {
+  private handleError(error: HttpErrorResponse) {
     console.log(error);
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(
+        `Backend returned code ${error.status}, ` + `body was: ${error.error}`
+      );
+    }
+    // return an observable with a user-facing error message
+    return throwError('Something bad happened; please try again later.');
   }
 
   public getDaysPerStatus(query: string): Observable<any> {

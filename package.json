@@ -23,6 +23,7 @@
     "@angular/router": "^7.2.15",
     "chart.js": "^2.8.0",
     "core-js": "^2.6.9",
+    "firebase": "^6.4.2",
     "lodash.sortby": "^4.7.0",
     "ng2-charts": "^2.2.3",
     "rxjs": "^6.5.2",

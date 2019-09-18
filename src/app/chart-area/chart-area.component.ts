@@ -14,7 +14,7 @@ interface FlatStatus {
 })
 export class ChartAreaComponent implements OnInit {
   constructor(private dataService: DataService) {}
-  query = '';
+  query = 'project = CP and sprint in openSprints()';
 
   public chartDataFiltered: Array<JiraDataItem> = [];
 
@@ -57,11 +57,10 @@ export class ChartAreaComponent implements OnInit {
   public chartType = 'bar';
 
   ngOnInit() {
-    this.query = 'project = CP and sprint in openSprints()';
     this.createChart();
   }
 
-   // TODO change to dynamic status instead of hardcoded
+  // TODO change to dynamic status instead of hardcoded
   createChart() {
     this.dataService.getDaysPerStatus(this.query).subscribe(data => {
       //console.log('tickets from jira:'); console.dir(data);
@@ -109,7 +108,9 @@ export class ChartAreaComponent implements OnInit {
                     break;
                   default:
                     statusName = 'Not mapped: ' + sh.from;
-                    console.error('status not mapped: ' + statusName);
+                    console.error(
+                      `status not mapped for ${d.key}: ${statusName}`
+                    );
                     break;
                 }
                 // add or update // TODO: specialized Dic-object for that
