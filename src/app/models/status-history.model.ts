@@ -14,3 +14,8 @@ export class JiraDataItem {
   type: string;
   data: number[];
 }
+
+export class JiraStatus {
+  name: string;
+  selected: boolean;
+}

@@ -10,12 +10,12 @@
 
 <div class="row" *ngFor="let label of chartLabels" class="horizontal">
   <input
-    (change)="CheckFieldsChange($event)"
-    value="{{ label }}"
+    (change)="SelectUnselectSerie($event)"
+    value="{{ label.name }}"
     type="checkbox"
-    checked
+    [(ngModel)]="label.selected"
   />
-  {{ label }}
+  {{ label.name }}
 </div>
 
 <div class="row" *ngIf="chartData.length == 0">

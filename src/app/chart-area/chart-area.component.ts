@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DataService } from '../services/data-service.service';
-import { JiraDataItem } from '../models/status-history.model';
+import { JiraDataItem, JiraStatus } from '../models/status-history.model';
 
 interface FlatStatus {
   status: string;
@@ -25,12 +25,12 @@ export class ChartAreaComponent implements OnInit {
   public chartUnselected: Array<number> = [];
 
   // TODO change to dynamic status instead of hardcoded
-  public chartLabels: Array<string> = [
-    'To Do',
-    'Blocked',
-    'In Progress',
-    'Code Review',
-    'Done'
+  public chartLabels: Array<JiraStatus> = [
+    { name: 'To Do', selected: true },
+    { name: 'Blocked', selected: true },
+    { name: 'In Progress', selected: true },
+    { name: 'Code Review', selected: true },
+    { name: 'Done', selected: true }
   ];
 
   public chartOptions: any = {
@@ -163,7 +163,7 @@ export class ChartAreaComponent implements OnInit {
       this.calculateAverage();
 
       this.chartDataFiltered = this.chartData;
-      this.chartLabelsFiltered = this.chartLabels;
+      this.chartLabelsFiltered = this.chartLabels.map(obj => obj.name);
     });
   }
 
@@ -234,14 +234,15 @@ export class ChartAreaComponent implements OnInit {
   }
 
   selectAllSeries() {
-    const checkboxes = document.getElementsByName('checkbox');
-    for (var checkbox in checkboxes) {
-      // select when refreshing data
+    for (var i = 0; i < this.chartLabels.length; i++) {
+      this.chartLabels[i].selected = true;
     }
   }
 
-  CheckFieldsChange(values: any) {
-    const index = this.chartLabels.indexOf(values.currentTarget.value);
+  SelectUnselectSerie(values: any) {
+    const index = this.chartLabels
+      .map(obj => obj.name)
+      .indexOf(values.currentTarget.value);
 
     if (values.currentTarget.checked) {
       const itemIndex = this.chartUnselected.indexOf(index, 0);
@@ -251,9 +252,9 @@ export class ChartAreaComponent implements OnInit {
     } else {
       this.chartUnselected.push(index);
     }
-    this.chartLabelsFiltered = this.chartLabels.filter(
-      (_, i) => this.chartUnselected.indexOf(i) <= -1
-    );
+    this.chartLabelsFiltered = this.chartLabels
+      .map(obj => obj.name)
+      .filter((_, i) => this.chartUnselected.indexOf(i) <= -1);
 
     this.chartDataFiltered = [];
     this.chartData.forEach(element => {
