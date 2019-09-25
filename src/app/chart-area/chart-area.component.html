@@ -44,7 +44,7 @@
       <table class="table table-responsive table-condensed">
         <tr>
           <th>JIRA ticket</th>
-          <th *ngFor="let label of chartLabels">{{ label }}</th>
+          <th *ngFor="let label of chartLabels">{{ label.name }}</th>
         </tr>
         <tr *ngFor="let d of chartData">
           <td>{{ d.label }}</td>

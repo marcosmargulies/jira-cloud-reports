@@ -48,8 +48,7 @@ export class DataService {
 
     const httpOptions = {
       headers: new HttpHeaders({
-        Authorization:
-          'Basic bWFyY29zLm1hcmd1bGllc0BzbWl0aC1uZXBoZXcuY29tOjZMTmhmVGgzNWJPZmVqWDZLTEtmN0M1OA==',
+        Authorization: 'Basic xxxxx==',
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Atlassian-Token': 'no-check',
@@ -57,7 +56,7 @@ export class DataService {
         // 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'
       })
     };
-    const post = 0;
+    const post = false;
     if (post) {
       return this.http
         .post(
@@ -75,7 +74,9 @@ export class DataService {
         `${this.jiraUrl}search?jql=${jqlString}&maxResults=100&expand=changelog,names`
       );
 
-      return this.http.get(url, {}).pipe(map((response, any) => response));
+      return this.http
+        .get(url, httpOptions)
+        .pipe(map((response, any) => response));
     }
     /*
     return this.post(`${this.jiraUrl}search`, {
