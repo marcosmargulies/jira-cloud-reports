@@ -7,31 +7,20 @@ import {
   HttpParams,
   HttpErrorResponse
 } from '@angular/common/http';
+import { LocalStorageService } from '../local-storage/local.storage.service';
+import { AccessToken } from 'src/app/models/access-token.module';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataService {
-  /*
-  private headers: HttpHeaders = new HttpHeaders({
-    'Content-type': 'application/json',
-    'Authorization': 'Basic xxxxx'
-  });
-*/
-  private jiraUrl = 'https://smith-nephew.atlassian.net/rest/api/3/';
-  // private jiraUrl ='https://smith-nephew.atlassian.net/rest/api/3/project';
-  constructor(private http: HttpClient) {}
+export class JiraDataService {
+  constructor(
+    private http: HttpClient,
+    private localStorage: LocalStorageService
+  ) {}
 
   private getIssues(jqlString: string): Observable<any> {
-    // Get API Key here: https://id.atlassian.com/manage/api-tokens
-    // return this.http.get('./assets/json/jiramock.json');
-    // return this.http.get(`${this.jiraUrl}`, {});
-    // this.setAuth('xxxx','xxxx');
-    // xxxxx:xxxxx
-    const user = 'marcos.margulies@smith-nephew.com';
-    const token = '6LNhfTh35bOfejX6KLKf7C58';
     const header = new HttpHeaders();
-    //header.append('Authorization', 'Basic ' + btoa(user + ':' + token));
     header.append('Content-type', 'application/json');
 
     const param = new HttpParams();
@@ -39,28 +28,24 @@ export class DataService {
     param.append('maxResults', '100');
     param.append('expand', 'changelog,names');
 
-    // TO DO: Authentication, proper POST
-    /*
-    return this.http.post(`${this.jiraUrl}search`, null, {
-      headers: header,
-      params: param
-    });*/
+    const token: AccessToken = this.localStorage.getTokenOnLocalStorage();
+    //jiraUrl = 'https://smith-nephew.atlassian.net/rest/api/3/';
+    const jiraUrl = `https://api.atlassian.com/ex/jira/${token.resources[0].id}/rest/api/3/`;
 
+    // TO DO: Authentication, proper POST
     const httpOptions = {
       headers: new HttpHeaders({
-        Authorization: 'Basic xxxxx==',
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Atlassian-Token': 'no-check',
-        'Response-Type': 'application/json'
-        // 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'
+        'Response-Type': 'application/json',
+        Authorization: 'Bearer ' + token.access_token
       })
     };
     const post = false;
     if (post) {
       return this.http
         .post(
-          `${this.jiraUrl}search`,
+          `${jiraUrl}search`,
           {
             jql: 'key=CP-241',
             maxResults: 100,
@@ -71,28 +56,15 @@ export class DataService {
         .pipe(map((response, any) => response));
     } else {
       const url = encodeURI(
-        `${this.jiraUrl}search?jql=${jqlString}&maxResults=100&expand=changelog,names`
+        `${jiraUrl}search?jql=${jqlString}&maxResults=100&expand=changelog,names`
       );
 
       return this.http
         .get(url, httpOptions)
         .pipe(map((response, any) => response));
     }
-    /*
-    return this.post(`${this.jiraUrl}search`, {
-      jql: jqlString,
-      maxResults: 100,
-      expand: ['changelog', 'names']
-    });
-    */
   }
-  /*
-private post(url: string, body: any): Observable<any> {
-    return this.http
-      .post(url, body, { headers: this.headers, withCredentials: true })
-      .pipe(map((response, any) => response));
-  }
-*/
+
   private handleError(error: HttpErrorResponse) {
     console.log(error);
     if (error.error instanceof ErrorEvent) {
@@ -114,7 +86,6 @@ private post(url: string, body: any): Observable<any> {
       map(data => {
         const a: Array<any> = [];
         data.issues.forEach(issue => {
-          // console.log("issue:"); console.dir(issue);
           a.push({
             key: issue.key,
             title: issue.fields.summary,
@@ -122,20 +93,24 @@ private post(url: string, body: any): Observable<any> {
             updated: issue.fields.updated,
             issuetype: issue.fields.issuetype.name,
             project: issue.fields.project.name,
-            // team: issue.fields.customfield_11716.value,
             estimate: issue.fields.customfield_10002,
             status: issue.fields.status.name,
             statusId: issue.fields.status.id,
             statusHistory: (function(changelog) {
               const filteredStatusHistory: Array<any> = [];
               const statusHistory: Array<any> = [];
-              //console.log('history');
-              //console.log(changelog.histories);
-              // This is for classic-gen:
-              // for (let _i = 0; _i <= changelog.histories.length - 1; _i++) {
 
-              // This is for new-gen:
-              for (let _i = changelog.histories.length - 1; _i >= 0; _i--) {
+              changelog.histories = changelog.histories.sort((n1, n2) => {
+                if (n1.created > n2.created) {
+                  return 1;
+                }
+                if (n1.created < n2.created) {
+                  return -1;
+                }
+                return 0;
+              });
+
+              for (let _i = 0; _i <= changelog.histories.length - 1; _i++) {
                 const history = changelog.histories[_i];
                 const statusHistoryItem = history.items.filter(
                   historyItem => historyItem.field === 'status'
@@ -210,11 +185,4 @@ private post(url: string, body: any): Observable<any> {
     );
     return obs;
   }
-  /*
-  private setAuth(username: string, pass: string) {
-    this.headers.append(
-      'Authorization',
-      'Basic ' + window.btoa(`${username}:${pass}`)
-    );
-  }*/
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DataService } from '../services/data-service.service';
+import { JiraDataService } from '../shared/index';
 import { JiraDataItem, JiraStatus } from '../models/status-history.model';
 
 interface FlatStatus {
@@ -13,7 +13,7 @@ interface FlatStatus {
   styleUrls: ['./chart-area.component.css']
 })
 export class ChartAreaComponent implements OnInit {
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: JiraDataService) {}
   query = 'project = CP and sprint in openSprints()';
 
   public chartDataFiltered: Array<JiraDataItem> = [];
@@ -92,6 +92,8 @@ export class ChartAreaComponent implements OnInit {
                     .toLowerCase()
                 ) {
                   case 'todo':
+                  case 'open':
+                  case 'backlog':
                     statusName = 'To Do';
                     break;
                   case 'blocked':
@@ -195,7 +197,7 @@ export class ChartAreaComponent implements OnInit {
         average.data[index] = average.data[index] / control[index];
       }
     }
-    console.log(this.chartDataTotal);
+    // console.log(this.chartDataTotal);
     this.chartData.push(average);
   }
 
