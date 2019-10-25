@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -6,8 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  link =
-    'https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=q8Col6WgOUFIot7VpryyJYPCajB7zioc&scope=read%3Ajira-user%20read%3Ajira-work%20offline_access&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fauth&state=${YOUR_USER_BOUND_VALUE}&response_type=code&prompt=consent';
+  YOUR_USER_BOUND_VALUE = 'my key goes here';
+  link = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${environment.clientId}&scope=read%3Ajira-user%20read%3Ajira-work%20offline_access&redirect_uri=${environment.redirectUrl}&state=${this.YOUR_USER_BOUND_VALUE}&response_type=code&prompt=consent`;
   constructor() {}
 
   login() {

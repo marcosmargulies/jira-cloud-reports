@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+
+  clientId: 'q8Col6WgOUFIot7VpryyJYPCajB7zioc',
+  clientSecret:
+    'L9BfXrfWrAakdU7ykh09vUUoqe3nurrBOEgUtOF_8VlYPU4jFmEgggOv8bXuVJS7',
+  redirectUrl: 'http://localhost:4200/auth'
 };
 
 /*

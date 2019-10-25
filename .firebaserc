@@ -1,6 +1,7 @@
 {
   "projects": {
     "jira-reports": "jira-reports-smith-nephew1f8b6",
-    "default": "jira-reports-smith-nephew"
+    "default": "jira-reports-smith-nephew",
+    "cloud": "jiracloudreports"
   }
 }

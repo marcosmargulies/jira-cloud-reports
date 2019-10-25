@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/jira-reports",
+    "public": "dist/jiracloudreports",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
