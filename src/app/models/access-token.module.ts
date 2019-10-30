@@ -3,6 +3,7 @@ export class AccessToken {
   expires_in: number;
   scope: string;
   token_type: string;
+  refresh_token: string;
   resources: TokenResources[];
 }
 

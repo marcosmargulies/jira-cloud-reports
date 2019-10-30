@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError, first } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
@@ -8,6 +8,7 @@ import {
 } from 'src/app/models/access-token.module';
 import { LocalStorageService } from '../local-storage/local.storage.service';
 import { environment } from 'src/environments/environment';
+import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,21 +25,34 @@ export class AuthTokenService {
     private localStorageService: LocalStorageService
   ) {}
 
-  public getTokenByCode(code: string): AccessToken {
-    let token: AccessToken;
-    this.GetBearerToken(code).subscribe(res => {
-      token = res;
-
-      this.GetResources(token.access_token).subscribe(p => {
-        token.resources = p;
-        this.localStorageService.storeTokenOnLocalStorage(token);
-      });
-    });
-
-    return token;
+  get isAutorized() {
+    return this.localStorageService.getTokenOnLocalStorage() != null;
   }
 
-  private GetBearerToken(code: string): Observable<AccessToken> {
+  // public getTokenByCode(code: string): AccessToken {
+  //   let token: AccessToken;
+  //   this.GetBearerToken(code).subscribe(res => {
+  //     token = res;
+
+  //     this.GetResources(token.access_token).subscribe(p => {
+  //       token.resources = p;
+  //       this.localStorageService.storeTokenOnLocalStorage(token);
+  //     });
+  //   });
+
+  //   return token;
+  // }
+
+  // public refreshToken(): AccessToken {
+  //   let token = this.localStorageService.getTokenOnLocalStorage();
+  //   this.RefreshToken('token.resources').subscribe(res => {
+  //     token = res;
+  //   });
+
+  //   return token;
+  // }
+
+  public GetBearerToken(code: string): Observable<AccessToken> {
     const httpHeaders = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -57,7 +71,7 @@ export class AuthTokenService {
     );
   }
 
-  private GetResources(token: string): Observable<TokenResources[]> {
+  public GetResources(token: string): Observable<TokenResources[]> {
     const httpHeaders = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -68,7 +82,7 @@ export class AuthTokenService {
     return this.http.get<TokenResources[]>(this.resourcesUrl, httpHeaders);
   }
 
-  private RefreshToken(refreshToken: string): Observable<AccessToken> {
+  public RefreshToken(refreshToken: string): Observable<AccessToken> {
     const httpHeaders = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'

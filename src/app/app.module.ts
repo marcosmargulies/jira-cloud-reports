@@ -9,24 +9,24 @@ import { ChartsModule } from 'ng2-charts';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { ChartAreaComponent } from './chart-area/chart-area.component';
 
-import { SearchComponent } from './search/search.component';
 import { Routes, RouterModule } from '@angular/router';
 import {
-  SearchService,
   JiraDataService,
   AuthGuardService,
   LocalStorageService
 } from './shared/index';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { AuthComponent } from './auth/auth.component';
 import { StorageServiceModule } from 'ngx-webstorage-service';
+import { PrivacyComponent } from './privacy/privacy.component';
+import { httpInterceptorProviders } from './http-interceptors/index';
+import { LoadingComponent } from './loading/loading.component';
 
 const appRoutes: Routes = [
   {
-    path: 'search',
-    component: SearchComponent,
-    canActivate: [AuthGuardService]
+    path: 'privacy',
+    component: PrivacyComponent
   },
   {
     path: 'report',
@@ -44,9 +44,10 @@ const appRoutes: Routes = [
     AppComponent,
     SearchBarComponent,
     ChartAreaComponent,
-    SearchComponent,
     HomeComponent,
-    AuthComponent
+    AuthComponent,
+    PrivacyComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -60,9 +61,9 @@ const appRoutes: Routes = [
   ],
   providers: [
     JiraDataService,
-    SearchService,
     AuthGuardService,
-    LocalStorageService
+    LocalStorageService,
+    httpInterceptorProviders
   ],
   bootstrap: [AppComponent]
 })

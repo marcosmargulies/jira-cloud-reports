@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { AuthTokenService } from '../shared';
+import { AuthTokenService, LocalStorageService } from '../shared/index';
 import { AccessToken } from '../models/access-token.module';
-import { Route } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-auth',
@@ -13,6 +10,7 @@ import { Route } from '@angular/compiler/src/core';
 })
 export class AuthComponent implements OnInit {
   constructor(
+    private localStorageService: LocalStorageService,
     private tokenService: AuthTokenService,
     private route: ActivatedRoute,
     private router: Router
@@ -21,13 +19,21 @@ export class AuthComponent implements OnInit {
   ngOnInit() {
     const code = this.route.snapshot.queryParams['code'];
 
-    this.tokenService.getTokenByCode(code);
+    let token: AccessToken;
 
-    //if (token != null) {
-    this.router.navigate(['/', 'report']);
-    //} else {
-    //this.router.navigate(['/', 'home']);
-    //}
-    // http://localhost:4200/report
+    if (this.tokenService.isAutorized) {
+      this.router.navigate(['/', 'report']);
+    } else {
+      this.tokenService.GetBearerToken(code).subscribe(res => {
+        token = res;
+
+        this.tokenService.GetResources(token.access_token).subscribe(p => {
+          token.resources = p;
+          this.localStorageService.storeTokenOnLocalStorage(token);
+
+          this.router.navigate(['/', 'report']);
+        });
+      });
+    }
   }
 }

@@ -29,10 +29,9 @@ export class JiraDataService {
     param.append('expand', 'changelog,names');
 
     const token: AccessToken = this.localStorage.getTokenOnLocalStorage();
-    //jiraUrl = 'https://smith-nephew.atlassian.net/rest/api/3/';
     const jiraUrl = `https://api.atlassian.com/ex/jira/${token.resources[0].id}/rest/api/3/`;
 
-    // TO DO: Authentication, proper POST
+    // TO DO: proper POST
     const httpOptions = {
       headers: new HttpHeaders({
         Accept: 'application/json',
