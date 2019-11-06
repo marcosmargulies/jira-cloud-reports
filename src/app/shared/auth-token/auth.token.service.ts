@@ -29,29 +29,6 @@ export class AuthTokenService {
     return this.localStorageService.getTokenOnLocalStorage() != null;
   }
 
-  // public getTokenByCode(code: string): AccessToken {
-  //   let token: AccessToken;
-  //   this.GetBearerToken(code).subscribe(res => {
-  //     token = res;
-
-  //     this.GetResources(token.access_token).subscribe(p => {
-  //       token.resources = p;
-  //       this.localStorageService.storeTokenOnLocalStorage(token);
-  //     });
-  //   });
-
-  //   return token;
-  // }
-
-  // public refreshToken(): AccessToken {
-  //   let token = this.localStorageService.getTokenOnLocalStorage();
-  //   this.RefreshToken('token.resources').subscribe(res => {
-  //     token = res;
-  //   });
-
-  //   return token;
-  // }
-
   public GetBearerToken(code: string): Observable<AccessToken> {
     const httpHeaders = {
       headers: new HttpHeaders({

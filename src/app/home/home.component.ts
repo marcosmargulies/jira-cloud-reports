@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
     } else {
       this.YOUR_USER_BOUND_VALUE = this.makeid(16);
       this.link = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${environment.clientId}&scope=read%3Ajira-user%20read%3Ajira-work%20offline_access&redirect_uri=${environment.redirectUrl}&state=${this.YOUR_USER_BOUND_VALUE}&response_type=code&prompt=consent`;
+      window.location.href = this.link;
     }
   }
 

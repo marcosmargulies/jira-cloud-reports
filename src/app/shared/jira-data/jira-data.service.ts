@@ -29,7 +29,9 @@ export class JiraDataService {
     param.append('expand', 'changelog,names');
 
     const token: AccessToken = this.localStorage.getTokenOnLocalStorage();
-    const jiraUrl = `https://api.atlassian.com/ex/jira/${token.resources[0].id}/rest/api/3/`;
+    const jiraUrl = `https://api.atlassian.com/ex/jira/${
+      token ? token.resources[0].id : ''
+    }/rest/api/3/`;
 
     // TO DO: proper POST
     const httpOptions = {
@@ -37,7 +39,7 @@ export class JiraDataService {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'Response-Type': 'application/json',
-        Authorization: 'Bearer ' + token.access_token
+        Authorization: token ? `${token.token_type} ${token.access_token}` : ''
       })
     };
     const post = false;

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthTokenService, LocalStorageService } from '../shared/index';
 import { AccessToken } from '../models/access-token.module';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth',
@@ -17,23 +18,27 @@ export class AuthComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const code = this.route.snapshot.queryParams['code'];
+    const code = this.route.snapshot.queryParamMap.get('code');
 
     let token: AccessToken;
 
     if (this.tokenService.isAutorized) {
       this.router.navigate(['/', 'report']);
     } else {
-      this.tokenService.GetBearerToken(code).subscribe(res => {
-        token = res;
-
-        this.tokenService.GetResources(token.access_token).subscribe(p => {
+      let x = this.tokenService
+        .GetBearerToken(code)
+        .pipe(
+          switchMap(t => {
+            token = t;
+            return this.tokenService.GetResources(t.access_token);
+          })
+        )
+        .subscribe(p => {
           token.resources = p;
           this.localStorageService.storeTokenOnLocalStorage(token);
 
           this.router.navigate(['/', 'report']);
         });
-      });
     }
   }
 }
