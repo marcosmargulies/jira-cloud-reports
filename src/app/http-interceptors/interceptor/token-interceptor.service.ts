@@ -3,10 +3,11 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, flatMap, retry } from 'rxjs/operators';
+import { throwError, Observable, BehaviorSubject, of } from 'rxjs';
+import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { LocalStorageService, AuthTokenService } from 'src/app/shared';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
@@ -29,12 +30,11 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
         console.log('Catching Error');
         console.log(err);
 
-        let errorList: Array<number> = [400, 403];
+        let errorList: Array<number> = [400, 401, 403];
+
         if (errorList.includes(err.status)) {
           this.localStorage.clearToken();
-        }
-        if (!this.localStorage.getTokenOnLocalStorage()) {
-          this.router.navigate(['/', 'home']);
+          location.reload(true);
         }
 
         if (err.status === 401) {

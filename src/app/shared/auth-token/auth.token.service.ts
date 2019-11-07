@@ -28,6 +28,9 @@ export class AuthTokenService {
   get isAutorized() {
     return this.localStorageService.getTokenOnLocalStorage() != null;
   }
+  get hasToken() {
+    return this.localStorageService.getTokenOnLocalStorage() != null;
+  }
 
   public GetBearerToken(code: string): Observable<AccessToken> {
     const httpHeaders = {
@@ -59,7 +62,10 @@ export class AuthTokenService {
     return this.http.get<TokenResources[]>(this.resourcesUrl, httpHeaders);
   }
 
-  public RefreshToken(refreshToken: string): Observable<AccessToken> {
+  public RefreshToken(): Observable<AccessToken> {
+    if (!this.hasToken) {
+      return;
+    }
     const httpHeaders = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -71,7 +77,8 @@ export class AuthTokenService {
         grant_type: 'refresh_token',
         client_id: environment.clientId,
         client_secret: environment.clientSecret,
-        refresh_token: refreshToken
+        refresh_token: this.localStorageService.getTokenOnLocalStorage()
+          .refresh_token
       },
       httpHeaders
     );

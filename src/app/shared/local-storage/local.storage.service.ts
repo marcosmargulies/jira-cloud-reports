@@ -5,7 +5,7 @@ import { AccessToken } from 'src/app/models/access-token.module';
 @Injectable()
 export class LocalStorageService {
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) {}
-  public STORAGE_TOKEN = '';
+  public STORAGE_TOKEN = 'JIRA-Auth-Token';
   public storeTokenOnLocalStorage(token: AccessToken): void {
     //const storedToken = this.storage.get(STORAGE_TOKEN) || [];
 
@@ -14,6 +14,12 @@ export class LocalStorageService {
     // console.log(
     //   this.storage.get(this.STORAGE_TOKEN) || 'LocaL storage is empty'
     // );
+  }
+
+  updateToken(tokenCode: string) {
+    let token: AccessToken = this.storage.get(this.STORAGE_TOKEN);
+    token.access_token = tokenCode;
+    this.storeTokenOnLocalStorage(token);
   }
 
   public getTokenOnLocalStorage(): AccessToken {
