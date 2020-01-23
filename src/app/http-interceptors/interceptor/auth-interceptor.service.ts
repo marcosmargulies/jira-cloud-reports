@@ -6,9 +6,8 @@ import {
   HttpRequest,
   HttpErrorResponse
 } from '@angular/common/http';
-import { throwError, Observable, BehaviorSubject, of } from 'rxjs';
+import { throwError, Observable, BehaviorSubject } from 'rxjs';
 import { catchError, filter, take, switchMap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 import { AuthTokenService, LocalStorageService } from 'src/app/shared/index';
 import { AccessToken } from 'src/app/models/access-token.module';
 
@@ -34,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!req.url.includes('api.atlassian.com/ex/jira')) {
       return next.handle(req);
     }
-    console.warn('AuthInterceptor');
+
     if (!req.headers.has('Content-Type')) {
       req = req.clone({
         headers: req.headers.set('Content-Type', 'application/json')
@@ -74,8 +73,10 @@ export class AuthInterceptor implements HttpInterceptor {
 
                 return next.handle(this.addAuthenticationToken(req));
               }),
-              catchError((err: any) => {
+              catchError(() => {
                 this.refreshTokenInProgress = false;
+                this.localStorage.clearToken();
+                location.reload();
                 return throwError(error);
               })
             );

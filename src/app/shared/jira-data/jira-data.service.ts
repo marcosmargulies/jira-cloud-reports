@@ -1,17 +1,17 @@
-import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { Observable, throwError } from "rxjs";
+import { map } from "rxjs/operators";
 import {
   HttpClient,
   HttpHeaders,
   HttpParams,
   HttpErrorResponse
-} from '@angular/common/http';
-import { LocalStorageService } from '../local-storage/local.storage.service';
-import { AccessToken } from 'src/app/models/access-token.module';
+} from "@angular/common/http";
+import { LocalStorageService } from "../local-storage/local.storage.service";
+import { AccessToken } from "src/app/models/access-token.module";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class JiraDataService {
   constructor(
@@ -21,25 +21,25 @@ export class JiraDataService {
 
   private getIssues(jqlString: string): Observable<any> {
     const header = new HttpHeaders();
-    header.append('Content-type', 'application/json');
+    header.append("Content-type", "application/json");
 
     const param = new HttpParams();
-    param.append('jql', jqlString);
-    param.append('maxResults', '100');
-    param.append('expand', 'changelog,names');
+    param.append("jql", jqlString);
+    param.append("maxResults", "100");
+    param.append("expand", "changelog,names");
 
     const token: AccessToken = this.localStorage.getTokenOnLocalStorage();
     const jiraUrl = `https://api.atlassian.com/ex/jira/${
-      token ? token.resources[0].id : ''
+      token ? token.resources[0].id : ""
     }/rest/api/3/`;
 
     // TO DO: proper POST
     const httpOptions = {
       headers: new HttpHeaders({
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Response-Type': 'application/json',
-        Authorization: token ? `${token.token_type} ${token.access_token}` : ''
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Response-Type": "application/json",
+        Authorization: token ? `${token.token_type} ${token.access_token}` : ""
       })
     };
     const post = false;
@@ -48,9 +48,9 @@ export class JiraDataService {
         .post(
           `${jiraUrl}search`,
           {
-            jql: 'key=CP-241',
+            jql: "key=CP-241",
             maxResults: 100,
-            expand: ['changelog', 'names']
+            expand: ["changelog", "names"]
           },
           httpOptions
         )
@@ -70,7 +70,7 @@ export class JiraDataService {
     console.log(error);
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
+      console.error("An error occurred:", error.error.message);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
@@ -79,7 +79,7 @@ export class JiraDataService {
       );
     }
     // return an observable with a user-facing error message
-    return throwError('Something bad happened; please try again later.');
+    return throwError("Something bad happened; please try again later.");
   }
 
   public getDaysPerStatus(query: string): Observable<any> {
@@ -114,7 +114,7 @@ export class JiraDataService {
               for (let _i = 0; _i <= changelog.histories.length - 1; _i++) {
                 const history = changelog.histories[_i];
                 const statusHistoryItem = history.items.filter(
-                  historyItem => historyItem.field === 'status'
+                  historyItem => historyItem.field === "status"
                 );
                 if (statusHistoryItem.length > 0) {
                   statusHistoryItem.created = history.created;
@@ -133,8 +133,8 @@ export class JiraDataService {
                   toDateTime: status.created,
                   transitionDurationHours: 0,
                   transitionDurationDays: 0,
-                  from: status[0]['fromString'],
-                  to: status[0]['toString']
+                  from: status[0]["fromString"],
+                  to: status[0]["toString"]
                 };
                 sh.transitionDurationHours =
                   Math.abs(
@@ -157,7 +157,7 @@ export class JiraDataService {
                     toDateTime: Date.now(),
                     transitionDurationHours: 0,
                     transitionDurationDays: 0,
-                    from: status[0]['toString'],
+                    from: status[0]["toString"],
                     to: null
                   };
                   shLast.transitionDurationHours =

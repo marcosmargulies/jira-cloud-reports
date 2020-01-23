@@ -1,0 +1,10 @@
+.pop{
+    height: 50px;
+    width: 40%;
+    margin-left: 20px;
+    border: 1px solid saddlebrown;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}

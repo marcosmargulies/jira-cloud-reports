@@ -1,0 +1,42 @@
+Original
+<p>
+  <google-chart
+    [data]="comboChart"
+    (mouseOver)="mouseOver($event)"
+  ></google-chart>
+</p>
+
+Test
+<p>
+  <google-chart
+    [data]="testChart"
+    (mouseOver)="mouseOver($event)"
+  ></google-chart>
+</p>
+
+<div style="display: flex">
+  <div
+    cdkDropList
+    [cdkDropListData]="usedStatus"
+    [cdkDropListConnectedTo]="secondList"
+    #firstList="cdkDropList"
+    (cdkDropListDropped)="drop($event)"
+    style="width: 40%"
+  >
+    <div *ngFor="let status of usedStatus" class="pop" cdkDrag>
+      {{ status }}
+    </div>
+  </div>
+  <div
+    cdkDropList
+    [cdkDropListData]="unusedStatus"
+    [cdkDropListConnectedTo]="firstList"
+    #secondList="cdkDropList"
+    (cdkDropListDropped)="drop($event)"
+    style="width: 40%"
+  >
+    <div *ngFor="let status of unusedStatus" class="pop" cdkDrag>
+      {{ status }}
+    </div>
+  </div>
+</div>

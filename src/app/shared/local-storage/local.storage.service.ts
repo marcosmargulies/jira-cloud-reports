@@ -7,13 +7,7 @@ export class LocalStorageService {
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) {}
   public STORAGE_TOKEN = 'JIRA-Auth-Token';
   public storeTokenOnLocalStorage(token: AccessToken): void {
-    //const storedToken = this.storage.get(STORAGE_TOKEN) || [];
-
     this.storage.set(this.STORAGE_TOKEN, token);
-    // console.log('Local Storage:');
-    // console.log(
-    //   this.storage.get(this.STORAGE_TOKEN) || 'LocaL storage is empty'
-    // );
   }
 
   updateToken(tokenCode: string) {
@@ -27,6 +21,6 @@ export class LocalStorageService {
   }
 
   public clearToken(): void {
-    this.storage.clear();
+    this.storage.remove(this.STORAGE_TOKEN);
   }
 }

@@ -1,14 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError, first } from 'rxjs/operators';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   AccessToken,
   TokenResources
 } from 'src/app/models/access-token.module';
 import { LocalStorageService } from '../local-storage/local.storage.service';
 import { environment } from 'src/environments/environment';
-import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 @Injectable({
   providedIn: 'root'

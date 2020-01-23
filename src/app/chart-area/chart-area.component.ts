@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { JiraDataService } from '../shared/index';
-import { JiraDataItem, JiraStatus } from '../models/status-history.model';
+import { Component, OnInit, Input } from "@angular/core";
+import { JiraDataService } from "../shared/index";
+import { JiraDataItem, JiraStatus } from "../models/status-history.model";
 
 interface FlatStatus {
   status: string;
@@ -8,13 +8,13 @@ interface FlatStatus {
 }
 
 @Component({
-  selector: 'app-chart-area',
-  templateUrl: './chart-area.component.html',
-  styleUrls: ['./chart-area.component.css']
+  selector: "app-chart-area",
+  templateUrl: "./chart-area.component.html",
+  styleUrls: ["./chart-area.component.css"]
 })
 export class ChartAreaComponent implements OnInit {
   constructor(private dataService: JiraDataService) {}
-  query = 'project = CP and sprint in openSprints()';
+  query = "project = CP and sprint in openSprints()";
 
   public chartDataFiltered: Array<JiraDataItem> = [];
 
@@ -26,11 +26,11 @@ export class ChartAreaComponent implements OnInit {
 
   // TODO change to dynamic status instead of hardcoded
   public chartLabels: Array<JiraStatus> = [
-    { name: 'To Do', selected: true },
-    { name: 'Blocked', selected: true },
-    { name: 'In Progress', selected: true },
-    { name: 'Code Review', selected: true },
-    { name: 'Done', selected: true }
+    { name: "To Do", selected: true },
+    { name: "Blocked", selected: true },
+    { name: "In Progress", selected: true },
+    { name: "Code Review", selected: true },
+    { name: "Done", selected: true }
   ];
 
   public chartOptions: any = {
@@ -43,18 +43,18 @@ export class ChartAreaComponent implements OnInit {
           let label = `${item.label}`;
           label += item.description
             ? ` ${item.description} (${item.status}): `
-            : ': ';
+            : ": ";
           if (total < 1) {
-            return label + (total * 24).toFixed(2) + ' hours';
+            return label + (total * 24).toFixed(2) + " hours";
           }
-          return label + total.toFixed(2) + ' days';
+          return label + total.toFixed(2) + " days";
         }
       }
     }
   };
 
   public chartLegend = true;
-  public chartType = 'bar';
+  public chartType = "bar";
 
   ngOnInit() {
     this.createChart();
@@ -84,32 +84,32 @@ export class ChartAreaComponent implements OnInit {
               });
             } else {
               element.statusHistory.forEach(sh => {
-                let statusName = '';
+                let statusName = "";
                 switch (
                   sh.from
-                    .split(' ')
-                    .join('')
+                    .split(" ")
+                    .join("")
                     .toLowerCase()
                 ) {
-                  case 'todo':
-                  case 'open':
-                  case 'backlog':
-                    statusName = 'To Do';
+                  case "todo":
+                  case "open":
+                  case "backlog":
+                    statusName = "To Do";
                     break;
-                  case 'blocked':
-                    statusName = 'Blocked';
+                  case "blocked":
+                    statusName = "Blocked";
                     break;
-                  case 'inprogress':
-                    statusName = 'In Progress';
+                  case "inprogress":
+                    statusName = "In Progress";
                     break;
-                  case 'codereview':
-                    statusName = 'Code Review';
+                  case "codereview":
+                    statusName = "Code Review";
                     break;
-                  case 'done':
-                    statusName = 'Done';
+                  case "done":
+                    statusName = "Done";
                     break;
                   default:
-                    statusName = 'Not mapped: ' + sh.from;
+                    statusName = "Not mapped: " + sh.from;
                     console.error(
                       `status not mapped for ${d.key}: ${statusName}`
                     );
@@ -132,27 +132,27 @@ export class ChartAreaComponent implements OnInit {
             const arr: Array<number> = [];
             let tmpVal: FlatStatus;
             arr.push(
-              (tmpVal = flattenedStatus.find(i => i.status === 'To Do'))
+              (tmpVal = flattenedStatus.find(i => i.status === "To Do"))
                 ? tmpVal.duration
                 : 0
             );
             arr.push(
-              (tmpVal = flattenedStatus.find(i => i.status === 'Blocked'))
+              (tmpVal = flattenedStatus.find(i => i.status === "Blocked"))
                 ? tmpVal.duration
                 : 0
             );
             arr.push(
-              (tmpVal = flattenedStatus.find(i => i.status === 'In Progress'))
+              (tmpVal = flattenedStatus.find(i => i.status === "In Progress"))
                 ? tmpVal.duration
                 : 0
             );
             arr.push(
-              (tmpVal = flattenedStatus.find(i => i.status === 'Code Review'))
+              (tmpVal = flattenedStatus.find(i => i.status === "Code Review"))
                 ? tmpVal.duration
                 : 0
             );
             arr.push(
-              (tmpVal = flattenedStatus.find(i => i.status === 'Done'))
+              (tmpVal = flattenedStatus.find(i => i.status === "Done"))
                 ? tmpVal.duration
                 : 0
             );
@@ -171,8 +171,8 @@ export class ChartAreaComponent implements OnInit {
 
   public calculateAverage() {
     const average = {
-      label: 'Average',
-      type: 'line',
+      label: "Average",
+      type: "line",
       visible: false,
       data: Array<number>()
     };
@@ -216,8 +216,8 @@ export class ChartAreaComponent implements OnInit {
         // console.log(clickedElementIndex, label, value, datasetLabel)
         if (datasetLabel) {
           window.open(
-            'https://smith-nephew.atlassian.net/browse/' + datasetLabel,
-            '_blank'
+            "https://smith-nephew.atlassian.net/browse/" + datasetLabel,
+            "_blank"
           );
         }
       }

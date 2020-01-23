@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { AuthTokenService } from '../shared/index';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
