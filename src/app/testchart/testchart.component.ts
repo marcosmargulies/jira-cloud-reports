@@ -12,6 +12,7 @@ import {
   moveItemInArray,
   transferArrayItem
 } from "@angular/cdk/drag-drop";
+import { ɵELEMENT_PROBE_PROVIDERS } from "@angular/platform-browser";
 
 @Component({
   selector: "app-testchart",
@@ -19,80 +20,43 @@ import {
   styleUrls: ["./testchart.component.css"]
 })
 export class TestchartComponent implements OnInit {
-  query = "project = CP and sprint in openSprints()";
+  query =
+    "project = CP and sprint in openSprints() and key in (CP-881, CP-883)";
 
   constructor(private dataService: JiraDataService) {}
 
   ngOnInit() {
-    /*this.dataService.getDaysPerStatus(this.query).subscribe(data => {
-      console.log("tickets from jira:");
-      console.dir(data);
-    });*/
+    this.getDataFromJIRA();
   }
 
-  public comboChart: GoogleChartInterface = {
-    chartType: "ComboChart",
-    dataTable: [
-      [
-        "Month",
-        "Bolivia",
-        "Ecuador",
-        "Madagascar",
-        "Papua New Guinea",
-        "Rwanda",
-        "Average"
-      ],
-      ["2004/05", 165, 938, 522, 998, 450, 614.6],
-      ["2005/06", 135, 1120, 599, 1268, 288, 682],
-      ["2006/07", 157, 1167, 587, 807, 397, 623],
-      ["2007/08", 139, 1110, 615, 968, 215, 609.4],
-      ["2008/09", 136, 691, 629, 1026, 366, 569.6]
-    ],
-    //firstRowIsData: true,
-    options: {
-      title: "Monthly Coffee Production by Country",
-      vAxis: { title: "Cups" },
-      hAxis: { title: "Month" },
-      seriesType: "bars",
-      series: { 5: { type: "line" } }
-    }
-  };
   public mouseOver(event: ChartMouseOverEvent) {
     //console.log(event, event.columnLabel, ": ", event.value);
   }
+  onEnter(value: string) {
+    this.query = value;
+    this.getDataFromJIRA();
+  }
 
-  // Start testing
-  private working: GoogleChartInterface["dataTable"] = [
-    [
-      "Month",
-      "Bolivia",
-      "Ecuador",
-      "Madagascar",
-      "Papua New Guinea",
-      "Rwanda",
-      "Average"
-    ],
-    ["2004/05", 165, 938, 522, 998, 450, 614.6],
-    ["2005/06", 135, 1120, 599, 1268, 288, 682],
-    ["2006/07", 157, 1167, 587, 807, 397, 623],
-    ["2007/08", 139, 1110, 615, 968, 215, 609.4],
-    ["2008/09", 136, 691, 629, 1026, 366, 569.6]
-  ];
+  getDataFromJIRA() {
+    this.dataService.getDaysPerStatus(this.query).subscribe(data => {
+      console.log("tickets from jira:");
+      console.dir(data);
+      this.pretifyJiraData(data);
+      this.refreshChart();
+      console.log(this.parseSource());
+    });
+  }
 
-  usedStatus = ["To Do", "In Progress", "Done"];
+  usedStatus = [];
   unusedStatus = [];
-  private datasource = [
-    { key: "123", data: { "To Do": 1, "In Progress": 2, Done: 3 } },
-    { key: "231", data: { "To Do": 2, "In Progress": 4, Done: 6 } },
-    { key: "543", data: { "To Do": 6, Done: 5 } },
-    { key: "536", data: { "To Do": 3, "In Progress": 7, Done: 2 } }
-  ];
+  private datasource = [];
 
   private parseSource(): GoogleChartInterface["dataTable"] {
     let res: GoogleChartInterface["dataTable"] = [];
 
     let header: Array<any> = [];
-    header.push("Time");
+    header.push("Keys");
+    header.push("Average");
     this.datasource.forEach(element => {
       header.push(element.key);
     });
@@ -101,13 +65,20 @@ export class TestchartComponent implements OnInit {
     for (let i = 0; i <= this.usedStatus.length; i++) {}
     this.usedStatus.forEach(_status => {
       let row: Array<any> = [];
-      row.push(_status);
+      let total: number = 0;
+      let control: number = 0;
       this.datasource.forEach(_dataSource => {
-        row.push(_dataSource.data[_status] || 0);
+        row.push(_dataSource.data[_status]);
+        total += _dataSource.data[_status] || 0;
+        control += _dataSource.data[_status] ? 1 : 0;
       });
+      // Add Average in the beggining of the Array
+      row.unshift(total / control);
+      row.unshift(_status);
+
       res.push(row);
     });
-    // console.log(res);
+    //console.log(res);
     return res;
   }
 
@@ -117,14 +88,20 @@ export class TestchartComponent implements OnInit {
     //firstRowIsData: true,
     options: {
       title: "Cycle time by JIRA keys",
-      vAxis: { title: "Time" },
+      vAxis: { title: "Time (in days)" },
       hAxis: { title: "Status" },
-      seriesType: "bars"
-      //series: { 5: { type: "line" } }
+      seriesType: "bars",
+      series: { 0: { type: "line" } }
     }
   };
 
   drop(event: CdkDragDrop<string[]>) {
+    if (
+      event.previousContainer.id === "cdk-drop-list-used" &&
+      event.previousContainer.data.length === 1
+    ) {
+      return;
+    }
     if (event.previousContainer !== event.container) {
       transferArrayItem(
         event.previousContainer.data,
@@ -136,6 +113,39 @@ export class TestchartComponent implements OnInit {
       moveItemInArray(this.usedStatus, event.previousIndex, event.currentIndex);
     }
     console.log(this.usedStatus);
+
+    this.refreshChart();
   }
-  // Finish testing
+
+  refreshChart() {
+    let ccComponent = this.testChart.component;
+    ccComponent.data.dataTable = this.parseSource();
+    //let ccWrapper = ccComponent.wrapper;
+    //force a redraw
+    ccComponent.draw();
+  }
+
+  private pretifyJiraData(jiraData: any) {
+    this.datasource = [];
+    this.usedStatus = [];
+
+    jiraData.forEach(element => {
+      let localData = new Object();
+      element.statusHistory.forEach(history => {
+        // Add new status to total statuses array
+        if (this.usedStatus.indexOf(history.from) < 0) {
+          this.usedStatus.push(history.from);
+        }
+        localData[history.from] = history.transitionDurationDays;
+      });
+
+      let item = {
+        key: element.key,
+        title: element.title,
+        status: element.status,
+        data: localData
+      };
+      this.datasource.push(item);
+    });
+  }
 }

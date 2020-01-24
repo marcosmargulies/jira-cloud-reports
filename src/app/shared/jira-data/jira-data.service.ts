@@ -94,7 +94,7 @@ export class JiraDataService {
             updated: issue.fields.updated,
             issuetype: issue.fields.issuetype.name,
             project: issue.fields.project.name,
-            estimate: issue.fields.customfield_10002,
+            //estimate: issue.fields.customfield_10002,
             status: issue.fields.status.name,
             statusId: issue.fields.status.id,
             statusHistory: (function(changelog) {
@@ -121,62 +121,87 @@ export class JiraDataService {
                   filteredStatusHistory.push(statusHistoryItem);
                 }
               }
-              for (let _i = 0; _i < filteredStatusHistory.length; _i++) {
-                const status = filteredStatusHistory[_i];
-                const fromDt =
-                  statusHistory.length > 0
-                    ? statusHistory[statusHistory.length - 1].toDateTime
-                    : issue.fields.created;
 
-                const sh = {
-                  fromDateTime: fromDt,
-                  toDateTime: status.created,
-                  transitionDurationHours: 0,
-                  transitionDurationDays: 0,
-                  from: status[0]["fromString"],
-                  to: status[0]["toString"]
-                };
-                sh.transitionDurationHours =
+              if (filteredStatusHistory.length === 0) {
+                let hours =
                   Math.abs(
-                    new Date(sh.toDateTime).getTime() -
-                      new Date(sh.fromDateTime).getTime()
+                    new Date(Date.now()).getTime() -
+                      new Date(issue.fields.created).getTime()
                   ) /
                   (1000 * 60 * 60);
-                sh.transitionDurationDays =
+                let days =
                   Math.abs(
-                    new Date(sh.toDateTime).getTime() -
-                      new Date(sh.fromDateTime).getTime()
+                    new Date(Date.now()).getTime() -
+                      new Date(issue.fields.created).getTime()
                   ) / 86400000;
 
-                // const sh = this.createIssueLog(fromDt, status.created, status[0]['fromString'], status[0]['toString']);
-                statusHistory.push(sh);
+                let onlyHistory = {
+                  fromDateTime: issue.fields.created,
+                  toDateTime: Date.now(),
+                  transitionDurationHours: hours,
+                  transitionDurationDays: days,
+                  from: issue.fields.status.name,
+                  to: null
+                };
+                statusHistory.push(onlyHistory);
+              } else {
+                for (let _i = 0; _i < filteredStatusHistory.length; _i++) {
+                  const status = filteredStatusHistory[_i];
+                  const fromDt =
+                    statusHistory.length > 0
+                      ? statusHistory[statusHistory.length - 1].toDateTime
+                      : issue.fields.created;
 
-                if (_i === filteredStatusHistory.length - 1) {
-                  const shLast = {
-                    fromDateTime: status.created,
-                    toDateTime: Date.now(),
+                  const sh = {
+                    fromDateTime: fromDt,
+                    toDateTime: status.created,
                     transitionDurationHours: 0,
                     transitionDurationDays: 0,
-                    from: status[0]["toString"],
-                    to: null
+                    from: status[0]["fromString"],
+                    to: status[0]["toString"]
                   };
-                  shLast.transitionDurationHours =
+                  sh.transitionDurationHours =
                     Math.abs(
-                      new Date(shLast.toDateTime).getTime() -
-                        new Date(shLast.fromDateTime).getTime()
+                      new Date(sh.toDateTime).getTime() -
+                        new Date(sh.fromDateTime).getTime()
                     ) /
                     (1000 * 60 * 60);
-                  shLast.transitionDurationDays =
+                  sh.transitionDurationDays =
                     Math.abs(
-                      new Date(shLast.toDateTime).getTime() -
-                        new Date(shLast.fromDateTime).getTime()
+                      new Date(sh.toDateTime).getTime() -
+                        new Date(sh.fromDateTime).getTime()
                     ) / 86400000;
 
-                  // const shLast = this.createIssueLog(this.createIssueLog(status.created, Date.now(), status[0]['toString'], null));
-                  statusHistory.push(shLast);
+                  // const sh = this.createIssueLog(fromDt, status.created, status[0]['fromString'], status[0]['toString']);
+                  statusHistory.push(sh);
+
+                  if (_i === filteredStatusHistory.length - 1) {
+                    const shLast = {
+                      fromDateTime: status.created,
+                      toDateTime: Date.now(),
+                      transitionDurationHours: 0,
+                      transitionDurationDays: 0,
+                      from: status[0]["toString"],
+                      to: null
+                    };
+                    shLast.transitionDurationHours =
+                      Math.abs(
+                        new Date(shLast.toDateTime).getTime() -
+                          new Date(shLast.fromDateTime).getTime()
+                      ) /
+                      (1000 * 60 * 60);
+                    shLast.transitionDurationDays =
+                      Math.abs(
+                        new Date(shLast.toDateTime).getTime() -
+                          new Date(shLast.fromDateTime).getTime()
+                      ) / 86400000;
+
+                    // const shLast = this.createIssueLog(this.createIssueLog(status.created, Date.now(), status[0]['toString'], null));
+                    statusHistory.push(shLast);
+                  }
                 }
+                //console.log("statusHistory:");console.dir(statusHistory);
               }
-              //console.log("statusHistory:");console.dir(statusHistory);
               return statusHistory;
             })(issue.changelog)
           });
