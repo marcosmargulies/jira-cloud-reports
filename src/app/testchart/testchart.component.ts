@@ -68,7 +68,7 @@ export class TestchartComponent implements OnInit {
       let total: number = 0;
       let control: number = 0;
       this.datasource.forEach(_dataSource => {
-        row.push(_dataSource.data[_status]);
+        row.push(_dataSource.data[_status] || 0);
         total += _dataSource.data[_status] || 0;
         control += _dataSource.data[_status] ? 1 : 0;
       });
@@ -78,11 +78,11 @@ export class TestchartComponent implements OnInit {
 
       res.push(row);
     });
-    //console.log(res);
+    console.log(res);
     return res;
   }
 
-  public testChart: GoogleChartInterface = {
+  public chartData: GoogleChartInterface = {
     chartType: "ComboChart",
     dataTable: this.parseSource(),
     //firstRowIsData: true,
@@ -118,7 +118,7 @@ export class TestchartComponent implements OnInit {
   }
 
   refreshChart() {
-    let ccComponent = this.testChart.component;
+    let ccComponent = this.chartData.component;
     ccComponent.data.dataTable = this.parseSource();
     //let ccWrapper = ccComponent.wrapper;
     //force a redraw
