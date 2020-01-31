@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   HttpEvent,
   HttpInterceptor,
   HttpHandler,
   HttpRequest,
   HttpErrorResponse
-} from '@angular/common/http';
-import { throwError, Observable, BehaviorSubject } from 'rxjs';
-import { catchError, filter, take, switchMap } from 'rxjs/operators';
-import { AuthTokenService, LocalStorageService } from 'src/app/shared/index';
-import { AccessToken } from 'src/app/models/access-token.module';
+} from "@angular/common/http";
+import { throwError, Observable, BehaviorSubject } from "rxjs";
+import { catchError, filter, take, switchMap } from "rxjs/operators";
+import { AuthTokenService, LocalStorageService } from "src/app/shared/index";
+import { AccessToken } from "src/app/models/access-token.module";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private localStorage: LocalStorageService
   ) {}
 
-  private AUTH_HEADER = 'Authorization';
+  private AUTH_HEADER = "Authorization";
   private token: AccessToken = null;
   private refreshTokenInProgress = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
@@ -30,13 +30,13 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     //TODO change to constants
-    if (!req.url.includes('api.atlassian.com/ex/jira')) {
+    if (!req.url.includes("api.atlassian.com/ex/jira")) {
       return next.handle(req);
     }
 
-    if (!req.headers.has('Content-Type')) {
+    if (!req.headers.has("Content-Type")) {
       req = req.clone({
-        headers: req.headers.set('Content-Type', 'application/json')
+        headers: req.headers.set("Content-Type", "application/json")
       });
     }
     this.token = this.localStorage.getTokenOnLocalStorage();
@@ -44,7 +44,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.warn('Error ' + error.status);
+        console.warn("Error " + error.status);
         if (error && (error.status === 400 || error.status === 401)) {
           // 400 errors are most likely wrong token or expired.
           // 401 errors are most likely going to be because we have an expired token that we need to refresh.
@@ -75,8 +75,8 @@ export class AuthInterceptor implements HttpInterceptor {
               }),
               catchError(() => {
                 this.refreshTokenInProgress = false;
-                this.localStorage.clearToken();
-                location.reload();
+                //this.localStorage.clearToken();
+                //location.reload();
                 return throwError(error);
               })
             );

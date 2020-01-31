@@ -8,12 +8,15 @@
   />
 </div>
 
-<p>
+<div class="row" *ngIf="!showChart">
+  No data
+</div>
+<div class="row">
   <google-chart
     [data]="chartData"
-    (mouseOver)="mouseOver($event)"
+    (chartSelect)="chartSelectHandler($event)"
   ></google-chart>
-</p>
+</div>
 
 <div style="display: flex">
   <div

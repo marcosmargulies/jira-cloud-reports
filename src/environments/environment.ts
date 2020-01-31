@@ -5,10 +5,10 @@
 export const environment = {
   production: false,
 
-  clientId: 'q8Col6WgOUFIot7VpryyJYPCajB7zioc',
+  clientId: "q8Col6WgOUFIot7VpryyJYPCajB7zioc",
   clientSecret:
-    'L9BfXrfWrAakdU7ykh09vUUoqe3nurrBOEgUtOF_8VlYPU4jFmEgggOv8bXuVJS7',
-  redirectUrl: 'http://localhost:4200/auth'
+    "L9BfXrfWrAakdU7ykh09vUUoqe3nurrBOEgUtOF_8VlYPU4jFmEgggOv8bXuVJS7",
+  redirectUrl: "http://localhost:4200/auth"
 };
 
 /*

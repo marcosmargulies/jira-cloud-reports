@@ -26,20 +26,37 @@ import { TestchartComponent } from "./testchart/testchart.component";
 import { Ng2GoogleChartsModule } from "ng2-google-charts";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { MenuComponent } from "./menu/menu.component";
+import {
+  MatMenuModule,
+  MatToolbarModule,
+  MatIconModule,
+  MatButtonModule
+} from "@angular/material";
+import { ExportComponent } from "./export/export.component";
 
 const appRoutes: Routes = [
   {
     path: "privacy",
     component: PrivacyComponent
   },
+  { path: "auth", component: AuthComponent },
+  { path: "home", component: HomeComponent },
   {
     path: "report",
     component: ChartAreaComponent,
     canActivate: [AuthGuardService]
   },
-  { path: "auth", component: AuthComponent },
-  { path: "home", component: HomeComponent },
-  { path: "testchart", component: TestchartComponent },
+  {
+    path: "export",
+    component: ExportComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: "testchart",
+    component: TestchartComponent,
+    canActivate: [AuthGuardService]
+  },
   { path: "", redirectTo: "home", pathMatch: "full" },
   { path: "**", redirectTo: "home" }
 ];
@@ -53,7 +70,9 @@ const appRoutes: Routes = [
     AuthComponent,
     PrivacyComponent,
     LoadingComponent,
-    TestchartComponent
+    TestchartComponent,
+    MenuComponent,
+    ExportComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +85,11 @@ const appRoutes: Routes = [
     Ng2GoogleChartsModule,
     RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
-    DragDropModule
+    DragDropModule,
+    MatMenuModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule
   ],
   providers: [
     JiraDataService,

@@ -1,0 +1,6 @@
+Fix reload of status when new query is executed (clean all status)
+Group status stage
+Export query to CSV
+Have login/logout
+Have profile
+Add settings to JIRA on prem

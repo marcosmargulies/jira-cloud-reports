@@ -4,15 +4,18 @@ import {
   DataPointPosition,
   BoundingBox,
   ChartHTMLTooltip,
-  ChartMouseOverEvent
+  ChartMouseOverEvent,
+  ChartReadyEvent,
+  ChartSelectEvent
 } from "ng2-google-charts";
-import { JiraDataService } from "../shared/index";
+import { JiraDataService, LocalStorageService } from "../shared/index";
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem
 } from "@angular/cdk/drag-drop";
 import { ɵELEMENT_PROBE_PROVIDERS } from "@angular/platform-browser";
+import { ChartMouseEvent } from "ng2-google-charts/google-chart/chart-mouse-event";
 
 @Component({
   selector: "app-testchart",
@@ -23,33 +26,46 @@ export class TestchartComponent implements OnInit {
   query =
     "project = CP and sprint in openSprints() and key in (CP-881, CP-883)";
 
-  constructor(private dataService: JiraDataService) {}
+  usedStatus = [];
+  unusedStatus = [];
+  private datasource = [];
+  showChart = true;
+
+  constructor(
+    private dataService: JiraDataService,
+    private localStorage: LocalStorageService
+  ) {}
 
   ngOnInit() {
     this.getDataFromJIRA();
   }
 
-  public mouseOver(event: ChartMouseOverEvent) {
-    //console.log(event, event.columnLabel, ": ", event.value);
+  public chartSelectHandler(e: ChartSelectEvent) {
+    let datasetLabel = e.columnLabel;
+    if (datasetLabel && datasetLabel !== "Average") {
+      let url = this.localStorage.getTokenOnLocalStorage().resources[0].url;
+      window.open(`${url}/browse/${datasetLabel}`, "_blank");
+    }
   }
+
   onEnter(value: string) {
     this.query = value;
     this.getDataFromJIRA();
+    console.log(this.datasource.length);
   }
 
   getDataFromJIRA() {
+    this.showChart = false;
     this.dataService.getDaysPerStatus(this.query).subscribe(data => {
       console.log("tickets from jira:");
       console.dir(data);
       this.pretifyJiraData(data);
       this.refreshChart();
+      console.log("Parsed result:");
       console.log(this.parseSource());
+      this.showChart = true;
     });
   }
-
-  usedStatus = [];
-  unusedStatus = [];
-  private datasource = [];
 
   private parseSource(): GoogleChartInterface["dataTable"] {
     let res: GoogleChartInterface["dataTable"] = [];
@@ -78,7 +94,7 @@ export class TestchartComponent implements OnInit {
 
       res.push(row);
     });
-    console.log(res);
+    //console.log(res);
     return res;
   }
 
@@ -112,17 +128,19 @@ export class TestchartComponent implements OnInit {
     } else {
       moveItemInArray(this.usedStatus, event.previousIndex, event.currentIndex);
     }
-    console.log(this.usedStatus);
+    //console.log(this.usedStatus);
 
     this.refreshChart();
   }
 
   refreshChart() {
     let ccComponent = this.chartData.component;
-    ccComponent.data.dataTable = this.parseSource();
-    //let ccWrapper = ccComponent.wrapper;
-    //force a redraw
-    ccComponent.draw();
+    if (ccComponent) {
+      ccComponent.data.dataTable = this.parseSource();
+      //let ccWrapper = ccComponent.wrapper;
+      //force a redraw
+      ccComponent.draw();
+    }
   }
 
   private pretifyJiraData(jiraData: any) {
