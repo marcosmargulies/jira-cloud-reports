@@ -94,9 +94,11 @@ export class JiraDataService {
             updated: issue.fields.updated,
             issuetype: issue.fields.issuetype.name,
             project: issue.fields.project.name,
-            //estimate: issue.fields.customfield_10002,
             status: issue.fields.status.name,
             statusId: issue.fields.status.id,
+            resolution: issue.fields.resolution
+              ? issue.fields.resolution.name
+              : "",
             statusHistory: (function(changelog) {
               const filteredStatusHistory: Array<any> = [];
               const statusHistory: Array<any> = [];

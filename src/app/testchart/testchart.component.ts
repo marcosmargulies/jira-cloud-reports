@@ -1,21 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces";
-import {
-  DataPointPosition,
-  BoundingBox,
-  ChartHTMLTooltip,
-  ChartMouseOverEvent,
-  ChartReadyEvent,
-  ChartSelectEvent
-} from "ng2-google-charts";
+import { ChartSelectEvent } from "ng2-google-charts";
 import { JiraDataService, LocalStorageService } from "../shared/index";
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem
 } from "@angular/cdk/drag-drop";
-import { ɵELEMENT_PROBE_PROVIDERS } from "@angular/platform-browser";
-import { ChartMouseEvent } from "ng2-google-charts/google-chart/chart-mouse-event";
 
 @Component({
   selector: "app-testchart",
@@ -30,6 +21,7 @@ export class TestchartComponent implements OnInit {
   unusedStatus = [];
   private datasource = [];
   showChart = true;
+  jiraResult = [];
 
   constructor(
     private dataService: JiraDataService,
@@ -57,10 +49,13 @@ export class TestchartComponent implements OnInit {
   getDataFromJIRA() {
     this.showChart = false;
     this.dataService.getDaysPerStatus(this.query).subscribe(data => {
+      this.jiraResult = data;
+
       console.log("tickets from jira:");
-      console.dir(data);
-      this.pretifyJiraData(data);
+      console.dir(this.jiraResult);
+      this.pretifyJiraData(this.jiraResult);
       this.refreshChart();
+
       console.log("Parsed result:");
       console.log(this.parseSource());
       this.showChart = true;

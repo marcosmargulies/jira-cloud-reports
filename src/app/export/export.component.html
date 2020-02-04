@@ -8,6 +8,11 @@
   />
 </div>
 
+<div>
+  <input value="{{ export }}" />
+  <textarea cols="100" rows="30">{{ export }}</textarea>
+</div>
+
 <table class="table table-responsive table-condensed">
   <!-- <tr>
     <th>JIRA ticket</th>
@@ -22,8 +27,8 @@
   </tr>
   <tr>
     <td>Total</td>
-    <td *ngFor="let total of chartDataTotal">
+    <!-- <td *ngFor="let total of chartDataTotal">
       {{ total | number: "1.0-2" }}
-    </td>
+    </td> -->
   </tr>
 </table>

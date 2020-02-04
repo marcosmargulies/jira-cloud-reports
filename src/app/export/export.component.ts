@@ -7,6 +7,7 @@ import { JiraDataService } from "../shared/jira-data/jira-data.service";
   styleUrls: ["./export.component.css"]
 })
 export class ExportComponent implements OnInit {
+  export: string = "";
   query = "project = CP and sprint in openSprints()";
   result: Array<any> = [];
   constructor(private dataService: JiraDataService) {}
@@ -22,6 +23,7 @@ export class ExportComponent implements OnInit {
     this.dataService.getDaysPerStatus(this.query).subscribe(data => {
       data.forEach(element => {
         this.result.push(element);
+        this.export += `${element.key},${element.title}\n`;
       });
       console.log(this.result);
     });

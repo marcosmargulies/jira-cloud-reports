@@ -13,7 +13,8 @@ import { Routes, RouterModule } from "@angular/router";
 import {
   JiraDataService,
   AuthGuardService,
-  LocalStorageService
+  LocalStorageService,
+  ArrayToCsvPipe
 } from "./shared/index";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HomeComponent } from "./home/home.component";
@@ -72,7 +73,8 @@ const appRoutes: Routes = [
     LoadingComponent,
     TestchartComponent,
     MenuComponent,
-    ExportComponent
+    ExportComponent,
+    ArrayToCsvPipe
   ],
   imports: [
     BrowserModule,
