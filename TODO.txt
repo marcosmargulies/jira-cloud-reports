@@ -1,4 +1,3 @@
-Fix reload of status when new query is executed (clean all status)
 Group status stage
 Export query to CSV
 Separate query bar component to be commom to all pages

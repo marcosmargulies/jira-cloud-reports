@@ -22,6 +22,7 @@ export class TestchartComponent implements OnInit {
   private datasource = [];
   showChart = true;
   jiraResult = [];
+  outputType = "date";
 
   constructor(
     private dataService: JiraDataService,
@@ -30,6 +31,9 @@ export class TestchartComponent implements OnInit {
 
   ngOnInit() {
     this.getDataFromJIRA();
+  }
+  radioChanged(e: any) {
+    this.outputType = e.target.value;
   }
 
   public chartSelectHandler(e: ChartSelectEvent) {
@@ -141,6 +145,7 @@ export class TestchartComponent implements OnInit {
   private pretifyJiraData(jiraData: any) {
     this.datasource = [];
     this.usedStatus = [];
+    this.unusedStatus = [];
 
     jiraData.forEach(element => {
       let localData = new Object();
