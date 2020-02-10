@@ -9,7 +9,7 @@ import {
 import { throwError, Observable, BehaviorSubject } from "rxjs";
 import { catchError, filter, take, switchMap } from "rxjs/operators";
 import { AuthTokenService, LocalStorageService } from "src/app/shared/index";
-import { AccessToken } from "src/app/models/access-token.module";
+import { AccessToken } from "src/app/models/access-token.model";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

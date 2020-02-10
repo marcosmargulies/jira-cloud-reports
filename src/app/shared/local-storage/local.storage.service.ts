@@ -1,11 +1,11 @@
-import { Inject, Injectable } from '@angular/core';
-import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
-import { AccessToken } from 'src/app/models/access-token.module';
+import { Inject, Injectable } from "@angular/core";
+import { LOCAL_STORAGE, StorageService } from "ngx-webstorage-service";
+import { AccessToken } from "src/app/models/access-token.model";
 
 @Injectable()
 export class LocalStorageService {
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) {}
-  public STORAGE_TOKEN = 'JIRA-Auth-Token';
+  public STORAGE_TOKEN = "JIRA-Auth-Token";
   public storeTokenOnLocalStorage(token: AccessToken): void {
     this.storage.set(this.STORAGE_TOKEN, token);
   }
@@ -22,5 +22,13 @@ export class LocalStorageService {
 
   public clearToken(): void {
     this.storage.remove(this.STORAGE_TOKEN);
+  }
+
+  public getJiraRestAddress(): string {
+    let token = this.getTokenOnLocalStorage();
+    const jiraUrl = `https://api.atlassian.com/ex/jira/${
+      token ? token.resources[0].id : ""
+    }/rest/api/3/`;
+    return jiraUrl;
   }
 }

@@ -35,6 +35,24 @@ export class TestchartComponent implements OnInit {
   radioChanged(e: any) {
     this.outputType = e.target.value;
   }
+  export(value: string) {
+    let filename = "cycle_extract.csv";
+    var csvData = value;
+    var blob = new Blob([csvData], { type: "text/csv" });
+    var url = window.URL.createObjectURL(blob);
+
+    if (navigator.msSaveOrOpenBlob) {
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    window.URL.revokeObjectURL(url);
+  }
 
   public chartSelectHandler(e: ChartSelectEvent) {
     let datasetLabel = e.columnLabel;
@@ -55,13 +73,11 @@ export class TestchartComponent implements OnInit {
     this.dataService.getDaysPerStatus(this.query).subscribe(data => {
       this.jiraResult = data;
 
-      console.log("tickets from jira:");
-      console.dir(this.jiraResult);
+      // console.log("tickets from jira:");      console.dir(this.jiraResult);
       this.pretifyJiraData(this.jiraResult);
       this.refreshChart();
 
-      console.log("Parsed result:");
-      console.log(this.parseSource());
+      // console.log("Parsed result:");      console.log(this.parseSource());
       this.showChart = true;
     });
   }

@@ -8,7 +8,7 @@ import {
   HttpErrorResponse
 } from "@angular/common/http";
 import { LocalStorageService } from "../local-storage/local.storage.service";
-import { AccessToken } from "src/app/models/access-token.module";
+import { AccessToken } from "src/app/models/access-token.model";
 
 @Injectable({
   providedIn: "root"
@@ -29,9 +29,7 @@ export class JiraDataService {
     param.append("expand", "changelog,names");
 
     const token: AccessToken = this.localStorage.getTokenOnLocalStorage();
-    const jiraUrl = `https://api.atlassian.com/ex/jira/${
-      token ? token.resources[0].id : ""
-    }/rest/api/3/`;
+    const jiraUrl = this.localStorage.getJiraRestAddress();
 
     // TO DO: proper POST
     const httpOptions = {

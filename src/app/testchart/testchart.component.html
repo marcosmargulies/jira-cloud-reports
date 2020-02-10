@@ -57,7 +57,7 @@
 </div>
 
 <div>
-  <fieldset id="selectContainer">
+  <fieldset>
     <legend>Selecting output type</legend>
     <div class="selection">
       <input
@@ -88,7 +88,7 @@
         id="outputType"
         value="time"
       />
-      <label for="outputHour">Time</label>
+      <label for="outputHour">Time (hours)</label>
     </div>
     <div class="selection">
       <input
@@ -100,8 +100,9 @@
       />
       <label for="outputDateAndTime">All</label>
     </div>
+    <button (click)="export(textarea.value)">Export</button>
   </fieldset>
-  <textarea cols="100" rows="12" wrap="off" readonly>{{
+  <textarea cols="100" rows="12" wrap="off" readonly ref-textarea>{{
     jiraResult | arrayToCsvPipe: outputType
   }}</textarea>
 </div>

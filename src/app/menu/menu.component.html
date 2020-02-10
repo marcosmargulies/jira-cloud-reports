@@ -7,8 +7,37 @@
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>
 
-  <a mat-button href="/export">Login</a>
-  <a mat-button href="/export">Logout</a>
+  <a mat-button>
+    <mat-icon>settings</mat-icon>
+  </a>
 
-  <span>My logged icon here</span>
+  <span *ngIf="profile">
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="loggedMenu"
+      aria-label="Example icon-button with a menu"
+    >
+      <img
+        md-fab-image
+        [src]="profile.avatarUrls['48x48']"
+        width="32"
+        height="32"
+      />
+    </button>
+    <mat-menu #loggedMenu="matMenu">
+      <button mat-menu-item disabled>
+        <span>{{ profile.emailAddress }}</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </span>
+
+  <span *ngIf="!profile">
+    <a mat-button>
+      <mat-icon>person</mat-icon>
+    </a>
+  </span>
 </mat-toolbar>
