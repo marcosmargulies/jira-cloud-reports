@@ -2,7 +2,7 @@ Group status stage
 Export query to CSV
 Separate query bar component to be commom to all pages
 Move query service to one central service
-Have login/logout
+Add My filters
 Have profile
 Add settings to JIRA on prem
 General clean up and remove unused things

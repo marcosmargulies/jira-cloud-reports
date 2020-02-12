@@ -1,18 +1,9 @@
-<div>
-  JIRA query
-  <input
-    #box
-    (keyup.enter)="onEnter(box.value)"
-    width="400px"
-    value="{{ query }}"
-  />
-</div>
-
 <div class="row" *ngIf="!showChart">
   No data
 </div>
 <div class="row">
   <google-chart
+    class="chart"
     [data]="chartData"
     (chartSelect)="chartSelectHandler($event)"
   ></google-chart>
@@ -50,7 +41,6 @@
       Not used Status
     </p>
     <div *ngFor="let status of unusedStatus" class="pop" cdkDrag>
-      (change)="radioChanged($event)"
       {{ status }}
     </div>
   </div>

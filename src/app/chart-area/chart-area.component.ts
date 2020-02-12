@@ -59,6 +59,9 @@ export class ChartAreaComponent implements OnInit {
   ngOnInit() {
     this.createChart();
   }
+  onResize(event) {
+    console.log("this.resize: ");
+  }
 
   // TODO change to dynamic status instead of hardcoded
   createChart() {

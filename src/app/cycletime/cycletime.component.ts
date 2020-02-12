@@ -1,7 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces";
 import { ChartSelectEvent } from "ng2-google-charts";
-import { JiraDataService, LocalStorageService } from "../shared/index";
+import {
+  JiraDataService,
+  LocalStorageService,
+  QueryService
+} from "../shared/index";
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -9,13 +13,13 @@ import {
 } from "@angular/cdk/drag-drop";
 
 @Component({
-  selector: "app-testchart",
-  templateUrl: "./testchart.component.html",
-  styleUrls: ["./testchart.component.css"]
+  selector: "app-cycletime",
+  templateUrl: "./cycletime.component.html",
+  styleUrls: ["./cycletime.component.css"]
 })
-export class TestchartComponent implements OnInit {
+export class CycleTimeComponent implements OnInit {
   query =
-    "project = CP and sprint in openSprints() and key in (CP-881, CP-883)";
+    "project = CLOUD AND NOT (resolution = Done AND resolutiondate < -14d AND status in (Done)) AND type != EPIC";
 
   usedStatus = [];
   unusedStatus = [];
@@ -26,15 +30,23 @@ export class TestchartComponent implements OnInit {
 
   constructor(
     private dataService: JiraDataService,
-    private localStorage: LocalStorageService
-  ) {}
+    private localStorage: LocalStorageService,
+    private queryService: QueryService
+  ) {
+    this.queryService.queryData$.subscribe(data => {
+      this.query = data;
+      this.getDataFromJIRA();
+    });
+  }
 
   ngOnInit() {
     this.getDataFromJIRA();
   }
+
   radioChanged(e: any) {
     this.outputType = e.target.value;
   }
+
   export(value: string) {
     let filename = "cycle_extract.csv";
     var csvData = value;
@@ -73,11 +85,11 @@ export class TestchartComponent implements OnInit {
     this.dataService.getDaysPerStatus(this.query).subscribe(data => {
       this.jiraResult = data;
 
-      // console.log("tickets from jira:");      console.dir(this.jiraResult);
+      // console.log("tickets from jira:");console.dir(this.jiraResult);
       this.pretifyJiraData(this.jiraResult);
       this.refreshChart();
 
-      // console.log("Parsed result:");      console.log(this.parseSource());
+      // console.log("Parsed result:");console.log(this.parseSource());
       this.showChart = true;
     });
   }
@@ -122,7 +134,9 @@ export class TestchartComponent implements OnInit {
       vAxis: { title: "Time (in days)" },
       hAxis: { title: "Status" },
       seriesType: "bars",
-      series: { 0: { type: "line" } }
+      series: { 0: { type: "line" } },
+      //width: 400,
+      height: 600
     }
   };
 

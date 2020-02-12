@@ -1,4 +1,19 @@
-<p>
-  JIRA query
-  <input />
-</p>
+<mat-form-field class="full-width">
+  <mat-label>JIRA Query</mat-label>
+  <input
+    matInput
+    placeholder="Ex. project = XXX"
+    (keyup.enter)="searchQuery()"
+    [(ngModel)]="query"
+  />
+
+  <button
+    mat-button
+    matSuffix
+    mat-icon-button
+    aria-label="Search"
+    (click)="searchQuery()"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+</mat-form-field>

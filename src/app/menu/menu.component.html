@@ -2,7 +2,7 @@
   <span>JIRA Cloud Reports</span>
 
   <a mat-button href="/report">Old Version</a>
-  <a mat-button href="/testchart">New Version</a>
+  <a mat-button href="/cycletime">Cycle Time</a>
   <a mat-button href="/export">Export</a>
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>
@@ -15,11 +15,11 @@
     <button
       mat-icon-button
       [matMenuTriggerFor]="loggedMenu"
-      aria-label="Example icon-button with a menu"
+      aria-label="My profile"
     >
       <img
         md-fab-image
-        [src]="profile.avatarUrls['48x48']"
+        [src]="profile.avatarUrls['32x32']"
         width="32"
         height="32"
       />
@@ -36,8 +36,18 @@
   </span>
 
   <span *ngIf="!profile">
-    <a mat-button>
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="loggedOutMenu"
+      aria-label="Click to login"
+    >
       <mat-icon>person</mat-icon>
-    </a>
+    </button>
+    <mat-menu #loggedOutMenu="matMenu">
+      <button mat-menu-item (click)="login()">
+        <mat-icon>launch</mat-icon>
+        <span>Login</span>
+      </button>
+    </mat-menu>
   </span>
 </mat-toolbar>

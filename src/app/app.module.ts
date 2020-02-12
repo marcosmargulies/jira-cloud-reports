@@ -14,7 +14,8 @@ import {
   JiraDataService,
   AuthGuardService,
   LocalStorageService,
-  ArrayToCsvPipe
+  ArrayToCsvPipe,
+  QueryService
 } from "./shared/index";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HomeComponent } from "./home/home.component";
@@ -23,18 +24,14 @@ import { StorageServiceModule } from "ngx-webstorage-service";
 import { PrivacyComponent } from "./privacy/privacy.component";
 import { httpInterceptorProviders } from "./http-interceptors/index";
 import { LoadingComponent } from "./loading/loading.component";
-import { TestchartComponent } from "./testchart/testchart.component";
+import { CycleTimeComponent } from "./cycletime/cycletime.component";
 import { Ng2GoogleChartsModule } from "ng2-google-charts";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { MenuComponent } from "./menu/menu.component";
-import {
-  MatMenuModule,
-  MatToolbarModule,
-  MatIconModule,
-  MatButtonModule
-} from "@angular/material";
 import { ExportComponent } from "./export/export.component";
+import { MaterialModule } from "./material.module";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
 const appRoutes: Routes = [
   {
@@ -54,8 +51,8 @@ const appRoutes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
-    path: "testchart",
-    component: TestchartComponent,
+    path: "cycletime",
+    component: CycleTimeComponent,
     canActivate: [AuthGuardService]
   },
   { path: "", redirectTo: "home", pathMatch: "full" },
@@ -71,7 +68,7 @@ const appRoutes: Routes = [
     AuthComponent,
     PrivacyComponent,
     LoadingComponent,
-    TestchartComponent,
+    CycleTimeComponent,
     MenuComponent,
     ExportComponent,
     ArrayToCsvPipe
@@ -88,16 +85,18 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
     DragDropModule,
-    MatMenuModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule
+    MaterialModule
   ],
   providers: [
     JiraDataService,
     AuthGuardService,
     LocalStorageService,
-    httpInterceptorProviders
+    httpInterceptorProviders,
+    QueryService,
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: "fill" }
+    }
   ],
   bootstrap: [AppComponent]
 })
