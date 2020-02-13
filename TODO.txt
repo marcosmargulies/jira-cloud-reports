@@ -1,3 +1,4 @@
+Mune profile is called for each page load
 Group status stage
 Export query to CSV
 Separate query bar component to be commom to all pages
@@ -5,4 +6,6 @@ Move query service to one central service
 Add My filters
 Have profile
 Add settings to JIRA on prem
+Refactor lots of things to services
 General clean up and remove unused things
+CI/CD?

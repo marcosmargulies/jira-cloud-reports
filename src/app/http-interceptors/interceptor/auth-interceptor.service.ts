@@ -9,7 +9,10 @@ import {
 import { throwError, Observable, BehaviorSubject } from "rxjs";
 import { catchError, filter, take, switchMap } from "rxjs/operators";
 import { AuthTokenService, LocalStorageService } from "src/app/shared/index";
-import { AccessToken } from "src/app/models/access-token.model";
+import {
+  AccessToken,
+  LocalStorageTypeEnum
+} from "src/app/models/access-token.model";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -39,7 +42,7 @@ export class AuthInterceptor implements HttpInterceptor {
         headers: req.headers.set("Content-Type", "application/json")
       });
     }
-    this.token = this.localStorage.getTokenOnLocalStorage();
+    this.token = this.localStorage.getAuthenticationTokenOnLocalStorage();
     req = this.addAuthenticationToken(req);
 
     return next.handle(req).pipe(
@@ -67,7 +70,9 @@ export class AuthInterceptor implements HttpInterceptor {
                 // When the call to refreshToken completes we reset the refreshTokenInProgress to false
                 // for the next time the token needs to be refreshed
                 this.token = success;
-                this.localStorage.updateToken(this.token.access_token);
+                this.localStorage.updateAuthenticationToken(
+                  this.token.access_token
+                );
                 this.refreshTokenInProgress = false;
                 this.refreshTokenSubject.next(success);
 

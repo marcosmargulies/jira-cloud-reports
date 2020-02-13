@@ -1,3 +1,8 @@
+export enum LocalStorageTypeEnum {
+  Authentication,
+  Settings
+}
+
 export class AccessToken {
   access_token: string;
   expires_in: number;
@@ -13,4 +18,12 @@ export class TokenResources {
   name: string;
   scopes: string[];
   avatarUrl: string;
+}
+
+export interface MenuSettingsDialogData {
+  isOAuthEnabled: boolean;
+  isAuthenticated: boolean;
+  url: string;
+  instanceAuthorized: TokenResources[];
+  instanceSelected: string;
 }

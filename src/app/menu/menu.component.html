@@ -7,9 +7,9 @@
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>
 
-  <a mat-button>
+  <button mat-icon-button (click)="openSettingsDialog()">
     <mat-icon>settings</mat-icon>
-  </a>
+  </button>
 
   <span *ngIf="profile">
     <button

@@ -28,7 +28,7 @@ export class JiraDataService {
     param.append("maxResults", "100");
     param.append("expand", "changelog,names");
 
-    const token: AccessToken = this.localStorage.getTokenOnLocalStorage();
+    const token: AccessToken = this.localStorage.getAuthenticationTokenOnLocalStorage();
     const jiraUrl = this.localStorage.getJiraRestAddress();
 
     // TO DO: proper POST

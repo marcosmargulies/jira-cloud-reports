@@ -5,8 +5,8 @@ import { Observable, Subject } from "rxjs";
   providedIn: "root"
 })
 export class QueryService {
-  queryData$: Observable<any>;
-  private querySubject = new Subject<any>();
+  queryData$: Observable<string>;
+  private querySubject = new Subject<string>();
 
   constructor() {
     this.queryData$ = this.querySubject.asObservable();

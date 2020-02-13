@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthTokenService, LocalStorageService } from "../shared/index";
-import { AccessToken } from "../models/access-token.model";
+import {
+  AccessToken,
+  LocalStorageTypeEnum
+} from "../models/access-token.model";
 import { switchMap } from "rxjs/operators";
 
 @Component({
@@ -35,8 +38,11 @@ export class AuthComponent implements OnInit {
         )
         .subscribe(p => {
           token.resources = p;
-          this.localStorageService.storeTokenOnLocalStorage(token);
+          this.localStorageService.storeAuthenticationTokenOnLocalStorage(
+            token
+          );
 
+          // TODO change to subscription
           window.location.reload();
           //this.router.navigate(['/', 'report']);
         });

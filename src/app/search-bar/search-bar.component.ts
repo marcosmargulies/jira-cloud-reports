@@ -18,7 +18,6 @@ export class SearchBarComponent implements OnInit {
   ngOnInit() {}
 
   searchQuery() {
-    console.log(this.query);
     this.queryService.queryData(this.query);
   }
 }

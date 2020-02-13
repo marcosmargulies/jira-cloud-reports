@@ -28,7 +28,7 @@ import { CycleTimeComponent } from "./cycletime/cycletime.component";
 import { Ng2GoogleChartsModule } from "ng2-google-charts";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { MenuComponent } from "./menu/menu.component";
+import { MenuComponent, MenuSettingsDialog } from "./menu/menu.component";
 import { ExportComponent } from "./export/export.component";
 import { MaterialModule } from "./material.module";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
@@ -71,8 +71,10 @@ const appRoutes: Routes = [
     CycleTimeComponent,
     MenuComponent,
     ExportComponent,
+    MenuSettingsDialog,
     ArrayToCsvPipe
   ],
+  entryComponents: [MenuSettingsDialog],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -84,7 +86,6 @@ const appRoutes: Routes = [
     Ng2GoogleChartsModule,
     RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
-    DragDropModule,
     MaterialModule
   ],
   providers: [

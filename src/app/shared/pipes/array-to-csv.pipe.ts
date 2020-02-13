@@ -85,7 +85,7 @@ export class ArrayToCsvPipe extends DatePipe implements PipeTransform {
           }
         });
 
-        response += `${item.key},https://smith-nephew.atlassian.net/browse/${item.key},${item.title},${statusColumns}${item.type},${item.status},${item.resolution}\n`;
+        response += `${item.key},TODO/${item.key},${item.title},${statusColumns}${item.type},${item.status},${item.resolution}\n`;
       });
 
       return response;

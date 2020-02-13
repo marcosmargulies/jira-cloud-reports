@@ -69,7 +69,8 @@ export class CycleTimeComponent implements OnInit {
   public chartSelectHandler(e: ChartSelectEvent) {
     let datasetLabel = e.columnLabel;
     if (datasetLabel && datasetLabel !== "Average") {
-      let url = this.localStorage.getTokenOnLocalStorage().resources[0].url;
+      let url = this.localStorage.getAuthenticationTokenOnLocalStorage()
+        .resources[0].url;
       window.open(`${url}/browse/${datasetLabel}`, "_blank");
     }
   }

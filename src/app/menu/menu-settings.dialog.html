@@ -1,0 +1,49 @@
+<h1 mat-dialog-title>Settings</h1>
+<mat-dialog-content>
+  <div>
+    <p><mat-label>Use OAuth authentication for JIRA Cloud</mat-label></p>
+    <p>
+      <mat-slide-toggle [(ngModel)]="data.isOAuthEnabled"></mat-slide-toggle>
+    </p>
+    <p>
+      <mat-hint
+        >Just unselect this option if you want to hardcode your JIRA server
+        address. Needed for JIRA on-prem.
+        <mat-icon
+          matTooltip="To use this functionality make sure you have another tab 
+on the same browser opened and logged-in in the JIRA instance. Also you might 
+need to configure your browser to allow CORS. This functionality is experimental and not tested."
+          >info</mat-icon
+        >
+      </mat-hint>
+    </p>
+  </div>
+
+  <div *ngIf="data.isAuthenticated && data.isOAuthEnabled">
+    <mat-form-field class="full-width">
+      <mat-label>Available instances</mat-label>
+      <mat-select [(value)]="data.instanceSelected">
+        <mat-option
+          *ngFor="let instance of data.instanceAuthorized"
+          [value]="instance.id"
+        >
+          {{ instance.url }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div *ngIf="!data.isOAuthEnabled">
+    <mat-form-field class="full-width" floatLabel="always">
+      <mat-label>JIRA Url</mat-label>
+      <input matInput [(ngModel)]="data.url" />
+      <span matPrefix>https://</span>
+      <mat-hint>Use just the instance address. Eg: jira.mysite.com</mat-hint>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>
+    Save
+  </button>
+</mat-dialog-actions>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { AuthTokenService } from "../shared/index";
+import { AuthTokenService, LocalStorageService } from "../shared/index";
 import { Router } from "@angular/router";
 
 @Component({
@@ -12,10 +12,18 @@ export class HomeComponent implements OnInit {
   YOUR_USER_BOUND_VALUE = "my key goes here";
   link = "";
 
-  constructor(private tokenService: AuthTokenService, private router: Router) {}
+  constructor(
+    private tokenService: AuthTokenService,
+    private localStorageService: LocalStorageService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    if (this.tokenService.isAutorized) {
+    if (
+      this.tokenService.isAutorized ||
+      (this.localStorageService.getSettingsOnLocalStorage() &&
+        !this.localStorageService.getSettingsOnLocalStorage().isOAuthEnabled)
+    ) {
       this.router.navigate(["/", "report"]);
     } else {
       this.YOUR_USER_BOUND_VALUE = this.makeid(16);
