@@ -40,7 +40,9 @@ export class JiraDataService {
         Authorization: token ? `${token.token_type} ${token.access_token}` : ""
       })
     };
-    const post = false;
+    const post =
+      this.localStorage.getSettingsOnLocalStorage() &&
+      !this.localStorage.getSettingsOnLocalStorage().isOAuthEnabled;
     if (post) {
       return this.http
         .post(

@@ -61,7 +61,22 @@ export class LocalStorageService {
     } else {
       jiraUrl = `https://${settings.url}/rest/api/2/`;
     }
-    console.log(jiraUrl);
+    //console.log(jiraUrl);
+    return jiraUrl;
+  }
+
+  public getJiraInstanceAddress(): string {
+    let token = this.getAuthenticationTokenOnLocalStorage();
+    let settings = this.getSettingsOnLocalStorage();
+    let jiraUrl = "";
+    if (!settings || (settings.isOAuthEnabled && !settings.instanceSelected)) {
+      jiraUrl = `${token.resources[0].name}.atlassian.net`;
+    } else if (settings.isOAuthEnabled && settings.instanceSelected) {
+      jiraUrl = `${settings.instanceSelected}`;
+    } else {
+      jiraUrl = `${settings.url}`;
+    }
+    //console.log(jiraUrl);
     return jiraUrl;
   }
 

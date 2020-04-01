@@ -1,10 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces";
 import { ChartSelectEvent } from "ng2-google-charts";
+
 import {
   JiraDataService,
   LocalStorageService,
-  QueryService
+  QueryService,
+  ArrayToCsvPipe
 } from "../shared/index";
 import {
   CdkDragDrop,
@@ -19,7 +21,7 @@ import {
 })
 export class CycleTimeComponent implements OnInit {
   query =
-    "project = CLOUD AND NOT (resolution = Done AND resolutiondate < -14d AND status in (Done)) AND type != EPIC";
+    'project = CLOUD AND type != EPIC and updatedDate <= startOfDay(-14d) and type in ("SNOW Task", "FrontDoor Task") and status in (Done, "In Progress")';
 
   usedStatus = [];
   unusedStatus = [];
@@ -27,11 +29,14 @@ export class CycleTimeComponent implements OnInit {
   showChart = true;
   jiraResult = [];
   outputType = "date";
+  jiraAddress = "";
+  fileName = "export";
 
   constructor(
     private dataService: JiraDataService,
     private localStorage: LocalStorageService,
-    private queryService: QueryService
+    private queryService: QueryService,
+    private arrayToCsv: ArrayToCsvPipe
   ) {
     this.queryService.queryData$.subscribe(data => {
       this.query = data;
@@ -40,6 +45,7 @@ export class CycleTimeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.jiraAddress = this.localStorage.getJiraInstanceAddress();
     this.getDataFromJIRA();
   }
 
@@ -47,9 +53,10 @@ export class CycleTimeComponent implements OnInit {
     this.outputType = e.target.value;
   }
 
-  export(value: string) {
-    let filename = "cycle_extract.csv";
-    var csvData = value;
+  export(value: string[]) {
+    const filename = this.fileName + ".csv";
+    var csvData = this.arrayToCsv.transform(value, this.outputType);
+
     var blob = new Blob([csvData], { type: "text/csv" });
     var url = window.URL.createObjectURL(blob);
 
@@ -75,13 +82,11 @@ export class CycleTimeComponent implements OnInit {
     }
   }
 
-  onEnter(value: string) {
-    this.query = value;
-    this.getDataFromJIRA();
-    console.log(this.datasource.length);
-  }
-
   getDataFromJIRA() {
+    this.usedStatus = [];
+    this.unusedStatus = [];
+    this.jiraResult = [];
+
     this.showChart = false;
     this.dataService.getDaysPerStatus(this.query).subscribe(data => {
       this.jiraResult = data;

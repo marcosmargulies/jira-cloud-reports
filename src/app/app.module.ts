@@ -93,6 +93,7 @@ const appRoutes: Routes = [
     AuthGuardService,
     LocalStorageService,
     httpInterceptorProviders,
+    ArrayToCsvPipe,
     QueryService,
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

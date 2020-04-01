@@ -9,7 +9,7 @@ import { QueryService } from "../shared";
 export class SearchBarComponent implements OnInit {
   //public data: Array<any> = MyData;
   public query: string =
-    "project = CLOUD AND NOT (resolution = Done AND resolutiondate < -14d AND status in (Done)) AND type != EPIC";
+    'project = CLOUD AND type != EPIC and updatedDate <= startOfDay(-14d) and type in ("SNOW Task", "FrontDoor Task") and status in (Done, "In Progress")';
 
   constructor(private queryService: QueryService) {
     this.queryService.queryData(this.query);

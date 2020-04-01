@@ -1,7 +1,8 @@
 <div class="row" *ngIf="!showChart">
-  No data
+  Loading
 </div>
 <div class="row">
+  {{ jiraResult.length }} items
   <google-chart
     class="chart"
     [data]="chartData"
@@ -90,9 +91,21 @@
       />
       <label for="outputDateAndTime">All</label>
     </div>
-    <button (click)="export(textarea.value)">Export</button>
+    <mat-form-field>
+      <mat-label>Csv file name</mat-label>
+      <input matInput placeholder="Filename" [(ngModel)]="fileName" />
+    </mat-form-field>
+
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="export(jiraResult)"
+      [disabled]="!fileName"
+    >
+      Download csv file
+    </button>
   </fieldset>
   <textarea cols="100" rows="12" wrap="off" readonly ref-textarea>{{
-    jiraResult | arrayToCsvPipe: outputType
+    jiraResult | arrayToCsvPipe: outputType:jiraAddress
   }}</textarea>
 </div>

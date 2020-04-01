@@ -39,7 +39,7 @@ export class MenuComponent implements OnInit {
     this.settings = this.localStorageService.getSettingsOnLocalStorage() || {
       isOAuthEnabled: true,
       isAuthenticated: this.token && this.token.access_token.length > 0,
-      url: "",
+      url: "smith-nephew.atlassian.net",
       instanceAuthorized: this.token ? this.token.resources : [],
       instanceSelected:
         this.token && this.token.resources.length > 0

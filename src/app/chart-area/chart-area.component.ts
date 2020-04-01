@@ -218,7 +218,10 @@ export class ChartAreaComponent implements OnInit {
         const value = chart.data.datasets[0].data[clickedElementIndex];
         // console.log(clickedElementIndex, label, value, datasetLabel)
         if (datasetLabel) {
-          window.open("TODO" + datasetLabel, "_blank");
+          window.open(
+            "https://smith-nephew.atlassian.net/browse/" + datasetLabel,
+            "_blank"
+          );
         }
       }
     }

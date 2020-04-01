@@ -5,8 +5,10 @@ import { DatePipe } from "@angular/common";
   name: "arrayToCsvPipe"
 })
 export class ArrayToCsvPipe extends DatePipe implements PipeTransform {
-  transform(value: Array<any>, args?: any): string {
+  transform(value: Array<any>, args?: any, address?: string): string {
     if (value) {
+      //console.log("args: ", args);      console.log("address", address);
+
       let statuses = [];
       let dataSource = [];
 
@@ -25,7 +27,7 @@ export class ArrayToCsvPipe extends DatePipe implements PipeTransform {
 
         let item = {
           key: element.key,
-          title: element.title,
+          title: element.title.replace(",", " "),
           status: element.status,
           type: element.issuetype,
           resolution: element.resolution,
@@ -85,7 +87,7 @@ export class ArrayToCsvPipe extends DatePipe implements PipeTransform {
           }
         });
 
-        response += `${item.key},TODO/${item.key},${item.title},${statusColumns}${item.type},${item.status},${item.resolution}\n`;
+        response += `${item.key},https://${address}/browse/${item.key},${item.title},${statusColumns}${item.type},${item.status},${item.resolution}\n`;
       });
 
       return response;
